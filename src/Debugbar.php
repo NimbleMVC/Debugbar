@@ -40,7 +40,7 @@ class Debugbar
      * Init module
      * @return void
      */
-    public function init()
+    public function init(): void
     {
         if (!isset(self::$debugBar)) {
             self::$debugBar = new StandardDebugBar();
