@@ -2,7 +2,12 @@
 
 namespace Nimblephp\debugbar;
 
+use DebugBar\DataCollector\ConfigCollector;
+use DebugBar\DataCollector\ExceptionsCollector;
+use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\StandardDebugBar;
+use krzysztofzylka\DatabaseManager\DatabaseManager;
+use Nimblephp\framework\Config;
 use Nimblephp\framework\Kernel;
 
 /**
@@ -47,6 +52,7 @@ class Debugbar
         }
 
         $this->createAssets();
+        $this->default();
     }
 
     /**
@@ -69,6 +75,15 @@ class Debugbar
             self::$debugBar->getJavascriptRenderer()->dumpCssAssets();
             file_put_contents($cssPath, ob_get_clean());
         }
+    }
+
+    /**
+     * Load default data
+     * @return void
+     */
+    protected function default(): void
+    {
+        self::$debugBar->addCollector(new ConfigCollector(Config::getAll()));
     }
 
 }
