@@ -1,0 +1,22 @@
+{
+  "name": "nimblephp/debugbar",
+  "description": "Debugbar for NimblePHP",
+  "type": "library",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Nimblephp\\debugbar\\": "src/"
+    }
+  },
+  "authors": [
+    {
+      "name": "Krzysztof Żyłka",
+      "email": "krzysztofzylka@yahoo.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.2",
+    "nimblephp/framework": "^0.1.2",
+    "maximebf/debugbar": "1.*"
+  }
+}
