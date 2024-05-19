@@ -15,12 +15,12 @@ Po zainstalowaniu composera tworzymy lub edytujemy plik `Middleware.php` i wklej
 $deugbar = new \Nimblephp\debugbar\Debugbar();
 $deugbar->init();
 ```
-Teraz zainicjował się debugbar i możemy go ustawić w `index.php`
+Dodajemy w szablonie:
 ```php
-# Dodajemy na początku
 echo \Nimblephp\debugbar\Debugbar::renderHead();
-
-# Oraz na końcu
+```
+Teraz zainicjował się debugbar i możemy go ustawić w `index.php` na końcu
+```php
 echo \Nimblephp\debugbar\Debugbar::render();
 ```
 
@@ -33,8 +33,7 @@ class Middleware extends \Nimblephp\framework\Middleware
 
     public function afterBootstrap()
     {
-        $deugbar = new \Nimblephp\debugbar\Debugbar();
-        $deugbar->init();
+        (new Debugbar())->init();
     }
 
     public function handleException(Throwable $exception)
