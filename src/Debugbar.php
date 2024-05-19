@@ -3,12 +3,14 @@
 namespace Nimblephp\debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
-use DebugBar\DataCollector\ExceptionsCollector;
 use DebugBar\DataCollector\PDO\PDOCollector;
+use DebugBar\DebugBarException;
+use DebugBar\JavascriptRenderer;
 use DebugBar\StandardDebugBar;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Nimblephp\framework\Config;
 use Nimblephp\framework\Kernel;
+use Nimblephp\framework\Response;
 
 /**
  * Debugbar module
@@ -23,13 +25,36 @@ class Debugbar
     public static StandardDebugBar $debugBar;
 
     /**
-     * Render head
-     * @return string
+     * Javascript renderer instance
+     * @var JavascriptRenderer
      */
-    public static function renderHead(): string
+    public static JavascriptRenderer $javascriptRenderer;
+
+    /**
+     * Init module
+     * @return void
+     * @throws DebugBarException
+     */
+    public static function init(): void
     {
-        return '<script src="/assets/debugbar.js"></script>
-        <link rel="stylesheet" href="/assets/debugbar.css">';
+        if (!isset(self::$debugBar)) {
+            self::$debugBar = new StandardDebugBar();
+            self::$javascriptRenderer = self::$debugBar->getJavascriptRenderer();
+        }
+
+        if (Config::get('DEBUG', false)) {
+            $uri = $_SERVER['REQUEST_URI'];
+
+            if (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
+                $response = new Response();
+                $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
+                $response->send();
+                exit;
+            }
+        }
+
+        self::$debugBar->addCollector(new ConfigCollector(Config::getAll()));
+        self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
     }
 
     /**
@@ -38,52 +63,16 @@ class Debugbar
      */
     public static function render(): string
     {
-        return self::$debugBar->getJavascriptRenderer()->render();
+        return self::$javascriptRenderer->render();
     }
 
     /**
-     * Init module
-     * @return void
+     * Render header
+     * @return string
      */
-    public function init(): void
+    public static function renderHeader(): string
     {
-        if (!isset(self::$debugBar)) {
-            self::$debugBar = new StandardDebugBar();
-        }
-
-        $this->createAssets();
-        $this->default();
-    }
-
-    /**
-     * Create assets file
-     * @return void
-     */
-    protected function createAssets(): void
-    {
-        $jsPath = Kernel::$projectPath . '/public/assets/debugbar.js';
-        $cssPath = Kernel::$projectPath . '/public/assets/debugbar.css';
-
-        if (!file_exists($jsPath)) {
-            ob_start();
-            self::$debugBar->getJavascriptRenderer()->dumpJsAssets();
-            file_put_contents($jsPath, ob_get_clean());
-        }
-
-        if (!file_exists($cssPath)) {
-            ob_start();
-            self::$debugBar->getJavascriptRenderer()->dumpCssAssets();
-            file_put_contents($cssPath, ob_get_clean());
-        }
-    }
-
-    /**
-     * Load default data
-     * @return void
-     */
-    protected function default(): void
-    {
-        self::$debugBar->addCollector(new ConfigCollector(Config::getAll()));
+        return self::$javascriptRenderer->renderHead();
     }
 
 }
