@@ -12,8 +12,7 @@ composer require nimblephp/debugbar
 ## Użycie
 Po zainstalowaniu composera tworzymy lub edytujemy plik `Middleware.php` i wklejamy w metodę `afterBootstrap` następujący kod:
 ```php
-$deugbar = new \Nimblephp\debugbar\Debugbar();
-$deugbar->init();
+(new Debugbar())->init();
 ```
 Dodajemy w szablonie:
 ```php
