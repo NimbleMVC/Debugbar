@@ -7,6 +7,7 @@ use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\StandardDebugBar;
+use Exception;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Nimblephp\framework\Config;
 use Nimblephp\framework\Kernel;
@@ -73,6 +74,50 @@ class Debugbar
     public static function renderHeader(): string
     {
         return self::$javascriptRenderer->renderHead();
+    }
+
+    /**
+     * Add message
+     * @param mixed $data
+     * @param string $label
+     * @return void
+     */
+    public static function addMessage(mixed $data, string $label = 'info'): void
+    {
+        self::$debugBar['messages']->addMessage($data, $label);
+    }
+
+    /**
+     * Add exception
+     * @param Exception $exception
+     * @return void
+     */
+    public static function addException(Exception $exception): void
+    {
+        self::$debugBar['exceptions']->addException($exception);
+    }
+
+    /**
+     * Start time
+     * @param $name
+     * @param $label
+     * @param $collector
+     * @return void
+     */
+    public function startTime($name, $label = null, $collector = null): void
+    {
+        self::$debugBar['time']->startMeasure($name, $label, $collector);
+    }
+
+    /**
+     * Stop time
+     * @param $name
+     * @param $params
+     * @return void
+     */
+    public function stopTime($name, $params = array()): void
+    {
+        self::$debugBar['time']->stopMeasure($name, $params);
     }
 
 }
