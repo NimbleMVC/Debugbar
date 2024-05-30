@@ -104,7 +104,7 @@ class Debugbar
      * @param $collector
      * @return void
      */
-    public function startTime($name, $label = null, $collector = null): void
+    public static function startTime($name, $label = null, $collector = null): void
     {
         self::$debugBar['time']->startMeasure($name, $label, $collector);
     }
@@ -115,7 +115,7 @@ class Debugbar
      * @param $params
      * @return void
      */
-    public function stopTime($name, $params = array()): void
+    public static function stopTime($name, $params = array()): void
     {
         self::$debugBar['time']->stopMeasure($name, $params);
     }
