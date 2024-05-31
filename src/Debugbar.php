@@ -6,9 +6,12 @@ use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
+use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
+use DebugBar\Storage\FileStorage;
 use Exception;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
+use Krzysztofzylka\File\File;
 use Nimblephp\framework\Config;
 use Nimblephp\framework\Kernel;
 use Nimblephp\framework\Response;
@@ -38,15 +41,25 @@ class Debugbar
      */
     public static function init(): void
     {
+
         if (!isset(self::$debugBar)) {
             self::$debugBar = new StandardDebugBar();
             self::$javascriptRenderer = self::$debugBar->getJavascriptRenderer();
+            self::$javascriptRenderer->setOpenHandlerUrl('/debugbar/open');
         }
 
         if (Config::get('DEBUG', false)) {
+            $storagePath = Kernel::$projectPath . '/storage/debugbar';
+            File::mkdir($storagePath);
+            self::$debugBar->setStorage(new FileStorage($storagePath));
+
             $uri = $_SERVER['REQUEST_URI'];
 
-            if (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
+            if (str_starts_with($uri, '/debugbar/open')) {
+                $openHandler = new OpenHandler(self::$debugBar);
+                $openHandler->handle();
+                exit;
+            } elseif (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
                 $response = new Response();
                 $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
                 $response->send();
