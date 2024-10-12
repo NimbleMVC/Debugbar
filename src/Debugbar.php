@@ -68,7 +68,10 @@ class Debugbar
         }
 
         self::$debugBar->addCollector(new ConfigCollector(Config::getAll()));
-        self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
+
+        if (Config::get('DATABASE', false)) {
+            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
+        }
     }
 
     /**
