@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": ">=8.2",
-    "nimblephp/framework": "^0.1.3",
+    "nimblephp/framework": "^0.1.5",
     "maximebf/debugbar": "1.*"
   }
 }

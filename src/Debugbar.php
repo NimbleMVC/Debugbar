@@ -48,7 +48,7 @@ class Debugbar
             self::$javascriptRenderer->setOpenHandlerUrl('/debugbar/open');
         }
 
-        if (Config::get('DEBUG', false)) {
+        if ($_ENV['DEBUG'] ?? false) {
             $storagePath = Kernel::$projectPath . '/storage/debugbar';
             File::mkdir($storagePath);
             self::$debugBar->setStorage(new FileStorage($storagePath));
@@ -67,9 +67,9 @@ class Debugbar
             }
         }
 
-        self::$debugBar->addCollector(new ConfigCollector(Config::getAll()));
+        self::$debugBar->addCollector(new ConfigCollector($_ENV));
 
-        if (Config::get('DATABASE', false)) {
+        if ($_ENV['DATABASE']) {
             self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
         }
     }
