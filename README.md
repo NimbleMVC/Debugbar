@@ -16,7 +16,7 @@ Po zainstalowaniu composera tworzymy lub edytujemy plik `Middleware.php` i wklej
 ```
 Dodajemy w szablonie:
 ```php
-echo \Nimblephp\debugbar\Debugbar::renderHead();
+echo \Nimblephp\debugbar\Debugbar::renderHeader();
 ```
 Teraz zainicjował się debugbar i możemy go ustawić w `index.php` na końcu
 ```php
@@ -26,6 +26,8 @@ echo \Nimblephp\debugbar\Debugbar::render();
 ### Gotowy plik `Middleware.php` z wyliczaniem czasu ładowania kontrolera oraz zwróceniem błędów
 ```php
 <?php
+
+use Nimblephp\debugbar\Debugbar;
 
 class Middleware extends \Nimblephp\framework\Middleware
 {
@@ -37,7 +39,7 @@ class Middleware extends \Nimblephp\framework\Middleware
 
     public function handleException(Throwable $exception)
     {
-        \Nimblephp\debugbar\Debugbar::$debugBar['exceptions']->addException($exception);
+        \Nimblephp\debugbar\Debugbar::$debugBar['exceptions']->addThrowable($exception);
     }
 
     public function beforeController(string $controllerName, string $action, array $params)
