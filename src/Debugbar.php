@@ -67,9 +67,11 @@ class Debugbar
             }
         }
 
-        self::$debugBar->addCollector(new ConfigCollector($_ENV));
+        if (!self::$debugBar->hasCollector('config')) {
+            self::$debugBar->addCollector(new ConfigCollector($_ENV));
+        }
 
-        if ($_ENV['DATABASE']) {
+        if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
             self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
         }
     }
