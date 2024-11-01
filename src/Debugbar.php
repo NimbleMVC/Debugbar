@@ -4,6 +4,8 @@ namespace Nimblephp\debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DataCollector\PDO\PDOCollector;
+use DebugBar\DataCollector\PDO\TraceablePDO;
+use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
@@ -72,8 +74,10 @@ class Debugbar
         }
 
         if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
-            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
+            $pdo = new TraceablePDO(DatabaseManager::$connection->getConnection());
+            self::$debugBar->addCollector(new PDOCollector($pdo));
         }
+
     }
 
     /**
