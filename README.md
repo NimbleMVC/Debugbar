@@ -50,6 +50,10 @@ class Middleware extends \Nimblephp\framework\Middleware
     public function afterController(string $controllerName, string $action, array $params)
     {
         \Nimblephp\debugbar\Debugbar::$debugBar['time']->stopMeasure('load-controller-' . $controllerName . $action);
+        
+        if (!Debugbar::$debugBar->hasCollector('module_register')) {
+            Debugbar::$debugBar->addCollector(new \Nimblephp\debugbar\Collectors\ModuleCollector(\Nimblephp\framework\ModuleRegister::getAll()));
+        }
     }
 
 }

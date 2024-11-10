@@ -4,8 +4,6 @@ namespace Nimblephp\debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DataCollector\PDO\PDOCollector;
-use DebugBar\DataCollector\PDO\TraceablePDO;
-use DebugBar\DataCollector\RequestDataCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
@@ -14,8 +12,10 @@ use DebugBar\Storage\FileStorage;
 use Exception;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
+use Nimblephp\debugbar\Collectors\ModuleCollector;
 use Nimblephp\framework\Config;
 use Nimblephp\framework\Kernel;
+use Nimblephp\framework\ModuleRegister;
 use Nimblephp\framework\Response;
 
 /**
@@ -74,10 +74,8 @@ class Debugbar
         }
 
         if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
-            $pdo = new TraceablePDO(DatabaseManager::$connection->getConnection());
-            self::$debugBar->addCollector(new PDOCollector($pdo));
+            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
         }
-
     }
 
     /**
