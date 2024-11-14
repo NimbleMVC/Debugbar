@@ -3,19 +3,15 @@
 namespace Nimblephp\debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
-use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use DebugBar\Storage\FileStorage;
 use Exception;
-use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
-use Nimblephp\debugbar\Collectors\ModuleCollector;
-use Nimblephp\framework\Config;
+use Nimblephp\framework\Exception\NimbleException;
 use Nimblephp\framework\Kernel;
-use Nimblephp\framework\ModuleRegister;
 use Nimblephp\framework\Response;
 
 /**
@@ -43,7 +39,6 @@ class Debugbar
      */
     public static function init(): void
     {
-
         if (!isset(self::$debugBar)) {
             self::$debugBar = new StandardDebugBar();
             self::$javascriptRenderer = self::$debugBar->getJavascriptRenderer();
@@ -71,10 +66,6 @@ class Debugbar
 
         if (!self::$debugBar->hasCollector('config')) {
             self::$debugBar->addCollector(new ConfigCollector($_ENV));
-        }
-
-        if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
-            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
         }
     }
 
@@ -138,6 +129,26 @@ class Debugbar
     public static function stopTime($name, $params = array()): void
     {
         self::$debugBar['time']->stopMeasure($name, $params);
+    }
+
+    /**
+     * Render uuid
+     * @param null $data
+     * @return string
+     * @throws NimbleException
+     */
+    public static function uuid($data = null): string
+    {
+        try {
+            $data = $data ?? random_bytes(16);
+            assert(strlen($data) == 16);
+            $data[6] = chr(ord($data[6]) & 0x0f | 0x40);
+            $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
+
+            return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
+        } catch (\Throwable $e) {
+            throw new NimbleException('Failed generate uuid: ' . $e->getMessage(), 500);
+        }
     }
 
 }
