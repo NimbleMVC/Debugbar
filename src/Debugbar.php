@@ -58,6 +58,7 @@ class Debugbar
                 exit;
             } elseif (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
                 $response = new Response();
+                $response->addHeader('Cache-Control', 'public, max-age=3600');
                 $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
                 $response->send();
                 exit;
