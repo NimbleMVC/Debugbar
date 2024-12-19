@@ -1,5 +1,5 @@
 # <h1 align="center">NimblePHP - Migrations</h1>
-Debugbar jest modułem który umożliwia w łatwy sposób zintegrować PHP Debugbar do projektu opartego na NimblePHO
+Debugbar jest modułem który umożliwia w łatwy sposób zintegrować PHP Debugbar do projektu opartego na NimblePHP
 
 **Dokumentacja** projektu dostępna jest pod linkiem:
 https://nimblemvc.github.io/documentation/extension/debugbar/start/#
