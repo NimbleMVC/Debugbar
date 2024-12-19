@@ -8,11 +8,11 @@ use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use DebugBar\Storage\FileStorage;
-use Exception;
 use Krzysztofzylka\File\File;
 use Nimblephp\framework\Exception\NimbleException;
 use Nimblephp\framework\Kernel;
 use Nimblephp\framework\Response;
+use Throwable;
 
 /**
  * Debugbar module
@@ -101,12 +101,12 @@ class Debugbar
 
     /**
      * Add exception
-     * @param Exception $exception
+     * @param Throwable $exception
      * @return void
      */
-    public static function addException(Exception $exception): void
+    public static function addException(Throwable $exception): void
     {
-        self::$debugBar['exceptions']->addException($exception);
+        self::$debugBar['exceptions']->addThrowable($exception);
     }
 
     /**
@@ -147,7 +147,7 @@ class Debugbar
             $data[8] = chr(ord($data[8]) & 0x3f | 0x80);
 
             return vsprintf('%s%s-%s-%s-%s-%s%s%s', str_split(bin2hex($data), 4));
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new NimbleException('Failed generate uuid: ' . $e->getMessage(), 500);
         }
     }
