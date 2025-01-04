@@ -7,7 +7,6 @@ use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
-use DebugBar\Storage\FileStorage;
 use Krzysztofzylka\File\File;
 use Nimblephp\framework\Exception\NimbleException;
 use Nimblephp\framework\Kernel;
@@ -48,7 +47,7 @@ class Debugbar
         if ($_ENV['DEBUG'] ?? false) {
             $storagePath = Kernel::$projectPath . '/storage/debugbar';
             File::mkdir($storagePath);
-            self::$debugBar->setStorage(new FileStorage($storagePath));
+            self::$debugBar->setStorage(new \Nimblephp\debugbar\FileStorage($storagePath));
 
             $uri = $_SERVER['REQUEST_URI'];
 
