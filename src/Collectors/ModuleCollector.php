@@ -4,7 +4,6 @@ namespace Nimblephp\debugbar\Collectors;
 
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
-use Nimblephp\framework\ModuleRegister;
 
 class ModuleCollector extends DataCollector implements Renderable
 {
@@ -17,6 +16,16 @@ class ModuleCollector extends DataCollector implements Renderable
     }
 
     public function collect()
+    {
+        $messages = $this->getMessages();
+
+        return array(
+            'count' => count($messages),
+            'messages' => $messages
+        );
+    }
+
+    public function getMessages()
     {
         $array = [];
 
@@ -35,13 +44,18 @@ class ModuleCollector extends DataCollector implements Renderable
     public function getWidgets()
     {
         $name = $this->getName();
+
         return [
-            "Modules" => [
+            "$name" => [
                 "icon" => "user",
                 "widget" => "PhpDebugBar.Widgets.VariableListWidget",
-                "map" => "$name",
+                "map" => "$name.messages",
                 "default" => "{}"
-            ]
+            ],
+            "$name:badge" => array(
+                "map" => "$name.count",
+                "default" => "null"
+            )
         ];
     }
 }
