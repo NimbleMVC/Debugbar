@@ -20,6 +20,12 @@ class Debugbar
 {
 
     /**
+     * Is init
+     * @var bool
+     */
+    public static bool $init = false;
+
+    /**
      * Debugbar instance
      * @var StandardDebugBar
      */
@@ -39,6 +45,7 @@ class Debugbar
     public static function init(): void
     {
         if (!isset(self::$debugBar)) {
+            self::$init = true;
             self::$debugBar = new StandardDebugBar();
             self::$javascriptRenderer = self::$debugBar->getJavascriptRenderer();
             self::$javascriptRenderer->setOpenHandlerUrl('/debugbar/open');
@@ -75,6 +82,10 @@ class Debugbar
      */
     public static function render(): string
     {
+        if (!self::$init) {
+            return '';
+        }
+
         return self::$javascriptRenderer->render();
     }
 
@@ -84,6 +95,10 @@ class Debugbar
      */
     public static function renderHeader(): string
     {
+        if (!self::$init) {
+            return '';
+        }
+
         return self::$javascriptRenderer->renderHead();
     }
 
@@ -95,6 +110,10 @@ class Debugbar
      */
     public static function addMessage(mixed $data, string $label = 'info'): void
     {
+        if (!self::$init) {
+            return;
+        }
+
         self::$debugBar['messages']->addMessage($data, $label);
     }
 
@@ -105,6 +124,10 @@ class Debugbar
      */
     public static function addException(Throwable $exception): void
     {
+        if (!self::$init) {
+            return;
+        }
+
         self::$debugBar['exceptions']->addThrowable($exception);
     }
 
@@ -117,6 +140,10 @@ class Debugbar
      */
     public static function startTime($name, $label = null, $collector = null): void
     {
+        if (!self::$init) {
+            return;
+        }
+
         self::$debugBar['time']->startMeasure($name, $label, $collector);
     }
 
@@ -128,6 +155,10 @@ class Debugbar
      */
     public static function stopTime($name, $params = array()): void
     {
+        if (!self::$init) {
+            return;
+        }
+
         self::$debugBar['time']->stopMeasure($name, $params);
     }
 
