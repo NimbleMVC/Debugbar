@@ -53,8 +53,23 @@ class Debugbar
 
         if ($_ENV['DEBUG'] ?? false) {
             $storagePath = Kernel::$projectPath . '/storage/debugbar';
-            File::mkdir($storagePath);
-            self::$debugBar->setStorage(new \Nimblephp\debugbar\FileStorage($storagePath));
+
+            if ($_ENV['DEBUGBAR_STORAGE'] ?? false) {
+                File::mkdir($storagePath);
+                self::$debugBar->setStorage(new \Nimblephp\debugbar\FileStorage($storagePath));
+            } elseif (file_exists($storagePath)) {
+                $deleted = 0;
+                $files = glob($storagePath . '/*');
+
+                foreach ($files as $file) {
+                    unlink($file);
+                    $deleted++;
+                }
+
+                if ($deleted > 0) {
+                    Debugbar::addMessage('Delete ' . $deleted . ' old debugbar cache files', 'Debugbar');
+                }
+            }
 
             $uri = $_SERVER['REQUEST_URI'];
 
