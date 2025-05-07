@@ -5,7 +5,7 @@
   "license": "MIT",
   "autoload": {
     "psr-4": {
-      "Nimblephp\\debugbar\\": "src/"
+      "NimblePHP\\Debugbar\\": "src/"
     }
   },
   "authors": [
@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": ">=8.2",
-    "nimblephp/framework": "^0.1.9",
-    "maximebf/debugbar": "1.*"
+    "nimblephp/framework": "^0.2.2",
+    "maximebf/debugbar": "^v2.1.6"
   }
 }

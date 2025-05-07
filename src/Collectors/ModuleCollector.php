@@ -1,6 +1,6 @@
 <?php
 
-namespace Nimblephp\debugbar\Collectors;
+namespace NimblePHP\Debugbar\Collectors;
 
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;

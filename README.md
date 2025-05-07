@@ -16,20 +16,20 @@ Po zainstalowaniu composera tworzymy lub edytujemy plik `Middleware.php` i wklej
 ```
 Dodajemy w szablonie:
 ```php
-echo \Nimblephp\debugbar\Debugbar::renderHeader();
+echo \NimblePHP\Debugbar\Debugbar::renderHeader();
 ```
 Teraz zainicjował się debugbar i możemy go ustawić w `index.php` na końcu
 ```php
-echo \Nimblephp\debugbar\Debugbar::render();
+echo \NimblePHP\debugbar\Debugbar::render();
 ```
 
 ### Gotowy plik `Middleware.php` z wyliczaniem czasu ładowania kontrolera oraz zwróceniem błędów
 ```php
 <?php
 
-use Nimblephp\debugbar\Debugbar;
+use NimblePHP\debugbar\Debugbar;
 
-class Middleware extends \Nimblephp\framework\Middleware
+class Middleware extends \NimblePHP\Framework\Middleware
 {
 
     public function afterBootstrap()
@@ -39,20 +39,20 @@ class Middleware extends \Nimblephp\framework\Middleware
 
     public function handleException(Throwable $exception)
     {
-        \Nimblephp\debugbar\Debugbar::$debugBar['exceptions']->addThrowable($exception);
+        \NimblePHP\Debugbar\Debugbar::$debugBar['exceptions']->addThrowable($exception);
     }
 
     public function beforeController(string $controllerName, string $action, array $params)
     {
-        \Nimblephp\debugbar\Debugbar::$debugBar['time']->startMeasure('load-controller-' . $controllerName . $action, 'Load ' . str_replace('\src\Controller\\', '', $controllerName) . ' controller');
+        \NimblePHP\Debugbar\Debugbar::$debugBar['time']->startMeasure('load-controller-' . $controllerName . $action, 'Load ' . str_replace('\src\Controller\\', '', $controllerName) . ' controller');
     }
 
     public function afterController(string $controllerName, string $action, array $params)
     {
-        \Nimblephp\debugbar\Debugbar::$debugBar['time']->stopMeasure('load-controller-' . $controllerName . $action);
+        \NimblePHP\Debugbar\Debugbar::$debugBar['time']->stopMeasure('load-controller-' . $controllerName . $action);
         
         if (!Debugbar::$debugBar->hasCollector('module_register')) {
-            Debugbar::$debugBar->addCollector(new \Nimblephp\debugbar\Collectors\ModuleCollector(\Nimblephp\framework\ModuleRegister::getAll()));
+            Debugbar::$debugBar->addCollector(new \NimblePHP\Debugbar\Collectors\ModuleCollector(\NimblePHP\Framework\ModuleRegister::getAll()));
         }
     }
 

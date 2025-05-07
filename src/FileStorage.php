@@ -1,6 +1,6 @@
 <?php
 
-namespace Nimblephp\debugbar;
+namespace NimblePHP\Debugbar;
 
 use DebugBar\Storage\StorageInterface;
 

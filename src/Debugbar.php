@@ -1,6 +1,6 @@
 <?php
 
-namespace Nimblephp\debugbar;
+namespace NimblePHP\Debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
 use DebugBar\DebugBarException;
@@ -8,9 +8,9 @@ use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use Krzysztofzylka\File\File;
-use Nimblephp\framework\Exception\NimbleException;
-use Nimblephp\framework\Kernel;
-use Nimblephp\framework\Response;
+use NimblePHP\Framework\Exception\NimbleException;
+use NimblePHP\Framework\Kernel;
+use NimblePHP\Framework\Response;
 use Throwable;
 
 /**
@@ -56,7 +56,7 @@ class Debugbar
 
             if ($_ENV['DEBUGBAR_STORAGE'] ?? false) {
                 File::mkdir($storagePath);
-                self::$debugBar->setStorage(new \Nimblephp\debugbar\FileStorage($storagePath));
+                self::$debugBar->setStorage(new \NimblePHP\Debugbar\FileStorage($storagePath));
             } elseif (file_exists($storagePath)) {
                 $deleted = 0;
                 $files = glob($storagePath . '/*');
