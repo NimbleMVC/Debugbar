@@ -56,7 +56,7 @@ class Debugbar
 
             if ($_ENV['DEBUGBAR_STORAGE'] ?? false) {
                 File::mkdir($storagePath);
-                self::$debugBar->setStorage(new \NimblePHP\Debugbar\FileStorage($storagePath));
+                self::$debugBar->setStorage(new FileStorage($storagePath));
             } elseif (file_exists($storagePath)) {
                 $deleted = 0;
                 $files = glob($storagePath . '/*');
@@ -77,7 +77,7 @@ class Debugbar
                 $openHandler = new OpenHandler(self::$debugBar);
                 $openHandler->handle();
                 exit;
-            } elseif (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
+            } elseif (str_starts_with($uri, '/vendor/php-debugbar/php-debugbar/')) {
                 $response = new Response();
                 $response->addHeader('Cache-Control', 'public, max-age=3600');
                 $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
