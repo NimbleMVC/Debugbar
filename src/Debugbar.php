@@ -3,10 +3,12 @@
 namespace NimblePHP\Debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
+use DebugBar\DataCollector\PDO\PDOCollector;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
+use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
@@ -56,7 +58,7 @@ class Debugbar
 
             if ($_ENV['DEBUGBAR_STORAGE'] ?? false) {
                 File::mkdir($storagePath);
-                self::$debugBar->setStorage(new \NimblePHP\Debugbar\FileStorage($storagePath));
+                self::$debugBar->setStorage(new FileStorage($storagePath));
             } elseif (file_exists($storagePath)) {
                 $deleted = 0;
                 $files = glob($storagePath . '/*');
@@ -77,10 +79,56 @@ class Debugbar
                 $openHandler = new OpenHandler(self::$debugBar);
                 $openHandler->handle();
                 exit;
-            } elseif (str_starts_with($uri, '/vendor/maximebf/debugbar/')) {
+            } elseif (str_starts_with($uri, '/vendor/php-debugbar/php-debugbar/')) {
                 $response = new Response();
                 $response->addHeader('Cache-Control', 'public, max-age=3600');
-                $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
+
+                $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
+                switch ($fileExtension) {
+                    case 'css':
+                        $response->addHeader('Content-Type', 'text/css');
+                        break;
+                    case 'js':
+                        $response->addHeader('Content-Type', 'application/javascript');
+                        break;
+                    case 'png':
+                        $response->addHeader('Content-Type', 'image/png');
+                        break;
+                    case 'jpg':
+                    case 'jpeg':
+                        $response->addHeader('Content-Type', 'image/jpeg');
+                        break;
+                    case 'gif':
+                        $response->addHeader('Content-Type', 'image/gif');
+                        break;
+                    case 'svg':
+                        $response->addHeader('Content-Type', 'image/svg+xml');
+                        break;
+                    case 'woff':
+                        $response->addHeader('Content-Type', 'font/woff');
+                        break;
+                    case 'woff2':
+                        $response->addHeader('Content-Type', 'font/woff2');
+                        break;
+                    case 'ttf':
+                        $response->addHeader('Content-Type', 'font/ttf');
+                        break;
+                    case 'eot':
+                        $response->addHeader('Content-Type', 'application/vnd.ms-fontobject');
+                        break;
+                    default:
+                        $response->addHeader('Content-Type', 'text/plain');
+                        break;
+                }
+
+                $filePath = Kernel::$projectPath . $uri;
+                if (file_exists($filePath)) {
+                    $response->setContent(file_get_contents($filePath));
+                } else {
+                    $response->setStatusCode(404);
+                    $response->setContent('File not found');
+                }
+
                 $response->send();
                 exit;
             }
@@ -88,6 +136,10 @@ class Debugbar
 
         if (!self::$debugBar->hasCollector('config')) {
             self::$debugBar->addCollector(new ConfigCollector($_ENV));
+        }
+
+        if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
+            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
         }
     }
 

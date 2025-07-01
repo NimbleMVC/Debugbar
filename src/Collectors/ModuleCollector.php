@@ -15,7 +15,7 @@ class ModuleCollector extends DataCollector implements Renderable
         $this->moduleRegister = $moduleRegister;
     }
 
-    public function collect()
+    public function collect(): array
     {
         $messages = $this->getMessages();
 
@@ -25,7 +25,7 @@ class ModuleCollector extends DataCollector implements Renderable
         );
     }
 
-    public function getMessages()
+    public function getMessages(): array
     {
         $array = [];
 
@@ -36,12 +36,12 @@ class ModuleCollector extends DataCollector implements Renderable
         return $array;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'module_register';
     }
 
-    public function getWidgets()
+    public function getWidgets(): array
     {
         $name = $this->getName();
 
