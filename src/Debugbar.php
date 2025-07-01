@@ -80,7 +80,54 @@ class Debugbar
             } elseif (str_starts_with($uri, '/vendor/php-debugbar/php-debugbar/')) {
                 $response = new Response();
                 $response->addHeader('Cache-Control', 'public, max-age=3600');
-                $response->setContent(file_get_contents(Kernel::$projectPath . $uri));
+
+                // Dodaj prawidłowy Content-Type na podstawie rozszerzenia pliku
+                $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
+                switch ($fileExtension) {
+                    case 'css':
+                        $response->addHeader('Content-Type', 'text/css');
+                        break;
+                    case 'js':
+                        $response->addHeader('Content-Type', 'application/javascript');
+                        break;
+                    case 'png':
+                        $response->addHeader('Content-Type', 'image/png');
+                        break;
+                    case 'jpg':
+                    case 'jpeg':
+                        $response->addHeader('Content-Type', 'image/jpeg');
+                        break;
+                    case 'gif':
+                        $response->addHeader('Content-Type', 'image/gif');
+                        break;
+                    case 'svg':
+                        $response->addHeader('Content-Type', 'image/svg+xml');
+                        break;
+                    case 'woff':
+                        $response->addHeader('Content-Type', 'font/woff');
+                        break;
+                    case 'woff2':
+                        $response->addHeader('Content-Type', 'font/woff2');
+                        break;
+                    case 'ttf':
+                        $response->addHeader('Content-Type', 'font/ttf');
+                        break;
+                    case 'eot':
+                        $response->addHeader('Content-Type', 'application/vnd.ms-fontobject');
+                        break;
+                    default:
+                        $response->addHeader('Content-Type', 'text/plain');
+                        break;
+                }
+
+                $filePath = Kernel::$projectPath . $uri;
+                if (file_exists($filePath)) {
+                    $response->setContent(file_get_contents($filePath));
+                } else {
+                    $response->setStatusCode(404);
+                    $response->setContent('File not found');
+                }
+
                 $response->send();
                 exit;
             }
