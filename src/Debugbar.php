@@ -81,7 +81,6 @@ class Debugbar
                 $response = new Response();
                 $response->addHeader('Cache-Control', 'public, max-age=3600');
 
-                // Dodaj prawidłowy Content-Type na podstawie rozszerzenia pliku
                 $fileExtension = pathinfo($uri, PATHINFO_EXTENSION);
                 switch ($fileExtension) {
                     case 'css':
