@@ -47,13 +47,14 @@ class Debugbar
     public static function init(): void
     {
         if (!isset(self::$debugBar)) {
-            self::$init = true;
+            self::$init = false;
             self::$debugBar = new StandardDebugBar();
             self::$javascriptRenderer = self::$debugBar->getJavascriptRenderer();
             self::$javascriptRenderer->setOpenHandlerUrl('/debugbar/open');
         }
 
         if ($_ENV['DEBUG'] ?? false) {
+            self::$init = true;
             $storagePath = Kernel::$projectPath . '/storage/debugbar';
 
             if ($_ENV['DEBUGBAR_STORAGE'] ?? false) {
