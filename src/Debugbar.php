@@ -12,6 +12,7 @@ use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
+use NimblePHP\Framework\Request;
 use NimblePHP\Framework\Response;
 use Throwable;
 
@@ -74,7 +75,7 @@ class Debugbar
                 }
             }
 
-            $uri = $_SERVER['REQUEST_URI'];
+            $uri = (new Request())->getUri();
 
             if (str_starts_with($uri, '/debugbar/open')) {
                 $openHandler = new OpenHandler(self::$debugBar);
