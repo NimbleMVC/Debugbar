@@ -16,7 +16,7 @@
   ],
   "require": {
     "php": ">=8.2",
-    "nimblephp/framework": "^0.2.7",
+    "nimblephp/framework": ">=0.2.7",
     "php-debugbar/php-debugbar": "^v2.2.2"
   }
 }
