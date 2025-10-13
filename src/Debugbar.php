@@ -137,6 +137,7 @@ class Debugbar
         }
 
         if (!self::$debugBar->hasCollector('config')) {
+            ksort($_ENV);
             self::$debugBar->addCollector(new ConfigCollector($_ENV));
         }
 
