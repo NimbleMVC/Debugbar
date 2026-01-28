@@ -10,6 +10,7 @@ use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
+use NimblePHP\Debugbar\Collectors\PhpConfigCollector;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
 use NimblePHP\Framework\Request;
@@ -142,7 +143,13 @@ class Debugbar
         }
 
         if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
-            self::$debugBar->addCollector(new PDOCollector(DatabaseManager::$connection->getConnection()));
+            $pdoCollector = new PDOCollector(DatabaseManager::$connection->getConnection());
+            $pdoCollector->enableBacktrace(20);
+            self::$debugBar->addCollector($pdoCollector);
+        }
+
+        if (!self::$debugBar->hasCollector('php_config')) {
+            self::$debugBar->addCollector(new PhpConfigCollector());
         }
     }
 
