@@ -8,7 +8,7 @@ use NimblePHP\Framework\Kernel;
 
 class ServiceCollector extends DataCollector implements Renderable
 {
-    public function collect()
+    public function collect(): array
     {
         $result = [];
         $serviceIds = Kernel::$serviceContainer->getRegisteredServices();
@@ -28,12 +28,12 @@ class ServiceCollector extends DataCollector implements Renderable
         ];
     }
 
-    public function getName()
+    public function getName(): string
     {
         return 'services';
     }
 
-    public function getWidgets()
+    public function getWidgets(): array
     {
         return [
             "Services" => [
