@@ -191,8 +191,11 @@ class Debugbar
             return;
         }
 
-        self::$debugBar['messages']->addMessage($data, $label);
+        $safeLabel = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $label);
+
+        self::$debugBar['messages']->addMessage($data, $safeLabel);
     }
+
 
     /**
      * Add exception
