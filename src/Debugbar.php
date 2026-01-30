@@ -3,13 +3,14 @@
 namespace NimblePHP\Debugbar;
 
 use DebugBar\DataCollector\ConfigCollector;
-use DebugBar\DataCollector\PDO\PDOCollector;
+use DebugBar\DataFormatter\DataFormatter;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
 use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
+use NimblePHP\Debugbar\Collectors\PDOCollector;
 use NimblePHP\Debugbar\Collectors\PhpConfigCollector;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
@@ -145,6 +146,7 @@ class Debugbar
         if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
             $pdoCollector = new PDOCollector(DatabaseManager::$connection->getConnection());
             $pdoCollector->enableBacktrace(20);
+            $pdoCollector->setDataFormatter(new DataFormatter());
             self::$debugBar->addCollector($pdoCollector);
         }
 
