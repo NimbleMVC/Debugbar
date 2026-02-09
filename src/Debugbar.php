@@ -78,12 +78,13 @@ class Debugbar
             }
 
             $uri = (new Request())->getUri();
+            $needleUri = $_ENV['DEBUGBAR_NEEDLE_URI'] ?? '/vendor/php-debugbar/php-debugbar/';
 
             if (str_starts_with($uri, '/debugbar/open')) {
                 $openHandler = new OpenHandler(self::$debugBar);
                 $openHandler->handle();
                 exit;
-            } elseif (str_starts_with($uri, '/vendor/php-debugbar/php-debugbar/')) {
+            } elseif (str_starts_with($uri, $needleUri)) {
                 $response = new Response();
                 $response->addHeader('Cache-Control', 'public, max-age=3600');
 
