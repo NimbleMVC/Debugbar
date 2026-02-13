@@ -12,6 +12,7 @@ use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
 use NimblePHP\Debugbar\Collectors\PDOCollector;
 use NimblePHP\Debugbar\Collectors\PhpConfigCollector;
+use NimblePHP\Debugbar\Collectors\RouteCollector;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
 use NimblePHP\Framework\Request;
@@ -153,6 +154,10 @@ class Debugbar
 
         if (!self::$debugBar->hasCollector('php_config')) {
             self::$debugBar->addCollector(new PhpConfigCollector());
+        }
+
+        if (!self::$debugBar->hasCollector('routes')) {
+            self::$debugBar->addCollector(new RouteCollector());
         }
     }
 
