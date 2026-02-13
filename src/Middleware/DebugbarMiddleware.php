@@ -11,6 +11,7 @@ use NimblePHP\Framework\Middleware\Interfaces\ControllerMiddlewareInterface;
 use NimblePHP\Framework\Request;
 use NimblePHP\Framework\Response;
 use Random\RandomException;
+use ReflectionMethod;
 use Throwable;
 
 class DebugbarMiddleware implements ControllerMiddlewareInterface
@@ -104,4 +105,12 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface
     {
     }
 
+    /**
+     * @param ReflectionMethod $reflection
+     * @param object $controller
+     * @return void
+     */
+    public function afterAttributesController(ReflectionMethod $reflection, object $controller): void
+    {
+    }
 }
