@@ -16,15 +16,22 @@ class ServiceCollector extends DataCollector implements Renderable
         foreach ($serviceIds as $id) {
             try {
                 $instance = Kernel::$serviceContainer->get($id);
-                $result[$id] = is_object($instance) ? get_class($instance) : gettype($instance);
+                $result[$id] = [
+                    'namespace' => is_object($instance) ? get_class($instance) : gettype($instance)
+                ];
             } catch (\Throwable $e) {
-                $result[$id] = 'Error: ' . $e->getMessage();
+                $result[$id] = [
+                    'namespace' => 'Error: ' . $e->getMessage()
+                ];
             }
         }
 
         return [
-            'services' => $result,
-            'count' => count($result)
+            'data' => $result,
+            'count' => count($result),
+            'key_map' => [
+                'namespace' => 'Namespace'
+            ]
         ];
     }
 
@@ -37,9 +44,9 @@ class ServiceCollector extends DataCollector implements Renderable
     {
         return [
             "Services" => [
-                "icon" => "cogs",
-                "widget" => "PhpDebugBar.Widgets.VariableListWidget",
-                "map" => "services.services",
+                "icon" => "bolt",
+                "widget" => "PhpDebugBar.Widgets.TableVariableListWidget",
+                "map" => "services",
                 "default" => "{}"
             ],
             "Services:badge" => [
