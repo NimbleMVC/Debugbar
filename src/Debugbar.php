@@ -2,7 +2,7 @@
 
 namespace NimblePHP\Debugbar;
 
-use DebugBar\DataCollector\ConfigCollector;
+use DebugBar\DataCollector\MessagesCollector;
 use DebugBar\DataFormatter\DataFormatter;
 use DebugBar\DebugBarException;
 use DebugBar\JavascriptRenderer;
@@ -10,6 +10,7 @@ use DebugBar\OpenHandler;
 use DebugBar\StandardDebugBar;
 use krzysztofzylka\DatabaseManager\DatabaseManager;
 use Krzysztofzylka\File\File;
+use NimblePHP\Debugbar\Collectors\ConfigCollector;
 use NimblePHP\Debugbar\Collectors\PDOCollector;
 use NimblePHP\Debugbar\Collectors\PhpConfigCollector;
 use NimblePHP\Debugbar\Collectors\RouteCollector;
@@ -42,6 +43,11 @@ class Debugbar
      * @var JavascriptRenderer
      */
     public static JavascriptRenderer $javascriptRenderer;
+
+    /**
+     * @var array
+     */
+    public static array $modelData = [];
 
     /**
      * Init module
@@ -141,8 +147,7 @@ class Debugbar
         }
 
         if (!self::$debugBar->hasCollector('config')) {
-            ksort($_ENV);
-            self::$debugBar->addCollector(new ConfigCollector($_ENV));
+            self::$debugBar->addCollector(new ConfigCollector());
         }
 
         if ($_ENV['DATABASE'] && !self::$debugBar->hasCollector('pdo')) {
@@ -188,20 +193,41 @@ class Debugbar
     }
 
     /**
+     * @param string $modelName
+     * @return void
+     */
+    public static function increaseModelData(string $modelName): void
+    {
+        if (!self::$init) {
+            return;
+        }
+
+        if (!array_key_exists($modelName, self::$modelData)) {
+            self::$modelData[$modelName] = 1;
+
+            return;
+        }
+
+        self::$modelData[$modelName]++;
+    }
+
+    /**
      * Add message
      * @param mixed $data
      * @param string $label
      * @return void
      */
-    public static function addMessage(mixed $data, string $label = 'info'): void
+    public static function addMessage(mixed $data, string $label = 'info', array $context = []): void
     {
         if (!self::$init) {
             return;
         }
 
         $safeLabel = preg_replace('/[^a-zA-Z0-9_\-]/', '_', $label);
+        /** @var MessagesCollector $message */
+        $message = self::$debugBar['messages'];
 
-        self::$debugBar['messages']->addMessage($data, $safeLabel);
+        $message->addMessage($data, $safeLabel, $context);
     }
 
 

@@ -4,58 +4,62 @@ namespace NimblePHP\Debugbar\Collectors;
 
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
+use NimblePHP\Framework\Module\Interfaces\ModuleInterface;
+use NimblePHP\Framework\Module\Interfaces\ModuleUpdateInterface;
+use NimblePHP\Framework\Module\ModuleRegister;
+use NimblePHP\Framework\Routes\Route;
 
 class ModuleCollector extends DataCollector implements Renderable
 {
-
-    private array $moduleRegister;
-
-    public function __construct(array $moduleRegister)
-    {
-        $this->moduleRegister = $moduleRegister;
-    }
-
     public function collect(): array
     {
-        $messages = $this->getMessages();
+        $result = [];
+        $modules = ModuleRegister::getAll();
 
-        return array(
-            'count' => count($messages),
-            'messages' => $messages
-        );
-    }
+        foreach ($modules as $module) {
+            /** @var ModuleInterface $moduleClass */
+            $moduleClass = $module['classes']->get('module', null);
 
-    public function getMessages(): array
-    {
-        $array = [];
-
-        foreach ($this->moduleRegister as $key => $module) {
-            $array[$key] = $this->formatVar($module);
+            $result[$module['namespace']] = [
+                'name' => is_object($moduleClass) ? $moduleClass->getName() : $module['name'],
+                'version' => $module['config']->get('pkg_version'),
+                'path' => $module['config']->get('path'),
+                'classes' => $module['classes']->count(),
+                'on_update' => is_object($moduleClass) ? ($moduleClass instanceof ModuleUpdateInterface ? 'Yes' : '') : ''
+            ];
         }
 
-        return $array;
+        return [
+            'data' => $result,
+            'count' => count($result),
+            'key_map' => [
+                'name' => 'Name',
+                'version' => 'Version',
+                'path' => 'Path',
+                'on_update' => 'Update script',
+                'classes' => 'Classes'
+            ]
+        ];
     }
 
     public function getName(): string
     {
-        return 'module_register';
+        return 'modules';
     }
 
     public function getWidgets(): array
     {
-        $name = $this->getName();
-
         return [
-            "$name" => [
-                "icon" => "user",
-                "widget" => "PhpDebugBar.Widgets.VariableListWidget",
-                "map" => "$name.messages",
+            "Modules" => [
+                "icon" => "box",
+                "widget" => "PhpDebugBar.Widgets.TableVariableListWidget",
+                "map" => "modules",
                 "default" => "{}"
             ],
-            "$name:badge" => array(
-                "map" => "$name.count",
-                "default" => "null"
-            )
+            "Modules:badge" => [
+                "map" => "modules.count",
+                "default" => 0
+            ]
         ];
     }
 }
