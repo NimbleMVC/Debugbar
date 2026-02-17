@@ -5,6 +5,7 @@ namespace NimblePHP\Debugbar\Collectors;
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 use NimblePHP\Framework\Kernel;
+use NimblePHP\Debugbar\Debugbar;
 
 class ServiceCollector extends DataCollector implements Renderable
 {
@@ -16,8 +17,13 @@ class ServiceCollector extends DataCollector implements Renderable
         foreach ($serviceIds as $id) {
             try {
                 $instance = Kernel::$serviceContainer->get($id);
+
                 $result[$id] = [
-                    'namespace' => is_object($instance) ? get_class($instance) : gettype($instance)
+                    'namespace' => is_object($instance) ? get_class($instance) : gettype($instance),
+                    'get' => Debugbar::$serviceData[$id]['get']-1,
+                    'set' => Debugbar::$serviceData[$id]['set'],
+                    'remove' => Debugbar::$serviceData[$id]['remove'],
+                    'has' => Debugbar::$serviceData[$id]['has']
                 ];
             } catch (\Throwable $e) {
                 $result[$id] = [
@@ -30,7 +36,11 @@ class ServiceCollector extends DataCollector implements Renderable
             'data' => $result,
             'count' => count($result),
             'key_map' => [
-                'namespace' => 'Namespace'
+                'namespace' => 'Namespace',
+                'get' => 'Get count',
+                'set' => 'Set count',
+                'has' => 'Has count',
+                'remove' => 'Remove count'
             ]
         ];
     }

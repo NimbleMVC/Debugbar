@@ -19,6 +19,7 @@ use NimblePHP\Framework\Middleware\Interfaces\ExceptionMiddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\LogMiddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\ModelMiddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\ORMModelMiddlewareInterface;
+use NimblePHP\Framework\Middleware\Interfaces\ServiceMddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\ViewMddlewareInterface;
 use NimblePHP\Framework\Request;
 use NimblePHP\Framework\Response;
@@ -26,12 +27,11 @@ use Random\RandomException;
 use ReflectionMethod;
 use Throwable;
 
-class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddlewareInterface, LogMiddlewareInterface, ModelMiddlewareInterface, ExceptionMiddlewareInterface, ORMModelMiddlewareInterface
+class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddlewareInterface, LogMiddlewareInterface, ModelMiddlewareInterface, ExceptionMiddlewareInterface, ORMModelMiddlewareInterface, ServiceMddlewareInterface
 {
 
     /**
      * @return void
-     * @throws DebugBarException
      * @throws NimbleException
      */
     public function afterBootstrap(): void
@@ -121,8 +121,6 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
         } catch (Throwable $th) {
             throw new NimbleException($th->getMessage(), 500);
         }
-
-        Debugbar::addMessage('Controller: ' . $controllerName, 'Load controller', $params);
     }
 
     /**
@@ -166,7 +164,7 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
             empty($realpath) ? $filePath : $realpath,
             $data,
             pathinfo($filePath, PATHINFO_EXTENSION),
-            empty($realpath) ? __FILE__ : $realpath
+            md5(json_encode($data) . $viewName, $filePath)
         );
     }
 
@@ -202,22 +200,75 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
         Debugbar::increaseModelData($model::class);
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function processingModelData(array &$data): void
     {
     }
 
+    /**
+     * @param array $data
+     * @return void
+     */
     public function processingModelQuery(array &$data): void
     {
     }
 
+    /**
+     * @param Throwable $exception
+     * @return void
+     */
     public function exceptionHook(\Throwable $exception): void
     {
         Debugbar::addException($exception);
     }
 
+    /**
+     * @param ORMModelInterface $model
+     * @return void
+     */
     public function afterConstructORMModel(ORMModelInterface $model): void
     {
         Debugbar::increaseModelData($model::class);
+    }
+
+    /**
+     * @param string $id
+     * @return void
+     */
+    public function serviceGet(string $id): void
+    {
+        Debugbar::increaseServiceData($id, 'get');
+    }
+
+    /**
+     * @param string $id
+     * @return void
+     */
+    public function serviceHas(string $id): void
+    {
+        Debugbar::increaseServiceData($id, 'has');
+    }
+
+    /**
+     * @param string $id
+     * @return void
+     */
+    public function serviceRemove(string $id): void
+    {
+        Debugbar::increaseServiceData($id, 'remove');
+    }
+
+    /**
+     * @param string $id
+     * @param mixed $service
+     * @return void
+     */
+    public function serviceSet(string $id, mixed $service): void
+    {
+        Debugbar::increaseServiceData($id, 'set');
     }
 
 }

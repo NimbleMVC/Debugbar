@@ -50,6 +50,11 @@ class Debugbar
     public static array $modelData = [];
 
     /**
+     * @var array
+     */
+    public static array $serviceData = [];
+
+    /**
      * Init module
      * @return void
      * @throws DebugBarException
@@ -209,6 +214,30 @@ class Debugbar
         }
 
         self::$modelData[$modelName]++;
+    }
+
+
+    /**
+     * @param string $id
+     * @param string $type
+     * @return void
+     */
+    public static function increaseServiceData(string $id, string $type): void
+    {
+        if (!self::$init) {
+            return;
+        }
+
+        if (!array_key_exists($id, self::$serviceData)) {
+            self::$serviceData[$id] = [
+                'get' => 0,
+                'set' => 0,
+                'has' => 0,
+                'remove' => 0
+            ];
+        }
+
+        self::$serviceData[$id][$type]++;
     }
 
     /**
