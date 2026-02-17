@@ -75,12 +75,6 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
         try {
             (new Debugbar())->init();
 
-            if (Debugbar::$init) {
-                if (Config::get('DEBUG_HIDE_CONFIG', false) && Debugbar::$debugBar->hasCollector('config')) {
-                    Debugbar::$debugBar['config']->setData([]);
-                }
-            }
-
             if (!Debugbar::$debugBar->hasCollector('templates')) {
                 Debugbar::$debugBar->addCollector(new TemplateCollector());
             }
