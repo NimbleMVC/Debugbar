@@ -9,6 +9,7 @@ use NimblePHP\Debugbar\Collectors\MiddlewareCollector;
 use NimblePHP\Debugbar\Collectors\ModelCollector;
 use NimblePHP\Debugbar\Collectors\ModuleCollector;
 use NimblePHP\Debugbar\Collectors\ServiceCollector;
+use NimblePHP\Debugbar\Collectors\TranslationCollector;
 use NimblePHP\Debugbar\Debugbar;
 use NimblePHP\Framework\Config;
 use NimblePHP\Framework\Exception\NimbleException;
@@ -111,6 +112,10 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
 
             if (!Debugbar::$debugBar->hasCollector('models')) {
                 Debugbar::$debugBar->addCollector(new ModelCollector());
+            }
+
+            if (!Debugbar::$debugBar->hasCollector('translation')) {
+                Debugbar::$debugBar->addCollector(new TranslationCollector());
             }
         } catch (Throwable $th) {
             throw new NimbleException($th->getMessage(), 500);
