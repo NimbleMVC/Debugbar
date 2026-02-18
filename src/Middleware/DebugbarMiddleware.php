@@ -2,7 +2,7 @@
 
 namespace NimblePHP\Debugbar\Middleware;
 
-use DebugBar\DataCollector\TemplateCollector;
+use NimblePHP\Debugbar\Collectors\TemplateCollector;
 use DebugBar\DebugBarException;
 use Krzysztofzylka\Generator\Generator;
 use NimblePHP\Debugbar\Collectors\MiddlewareCollector;
