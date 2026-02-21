@@ -138,7 +138,8 @@ class Debugbar
                         break;
                 }
 
-                $filePath = Kernel::$projectPath . $uri;
+                $filePath = Kernel::$projectPath . $_ENV['DEBUGBAR_FIXED_URI'] . $uri;
+
                 if (file_exists($filePath)) {
                     $response->setContent(file_get_contents($filePath));
                 } else {
