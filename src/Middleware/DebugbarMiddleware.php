@@ -28,7 +28,7 @@ use Random\RandomException;
 use ReflectionMethod;
 use Throwable;
 
-class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddlewareInterface, LogMiddlewareInterface, ModelMiddlewareInterface, ExceptionMiddlewareInterface, ORMModelMiddlewareInterface, ServiceMddlewareInterface
+class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddlewareInterface, LogMiddlewareInterface, ModelMiddlewareInterface, ExceptionMiddlewareInterface, ORMModelMiddlewareInterface
 {
 
     /**
@@ -231,43 +231,6 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
     public function afterConstructORMModel(ORMModelInterface $model): void
     {
         Debugbar::increaseModelData($model::class);
-    }
-
-    /**
-     * @param string $id
-     * @return void
-     */
-    public function serviceGet(string $id): void
-    {
-        Debugbar::increaseServiceData($id, 'get');
-    }
-
-    /**
-     * @param string $id
-     * @return void
-     */
-    public function serviceHas(string $id): void
-    {
-        Debugbar::increaseServiceData($id, 'has');
-    }
-
-    /**
-     * @param string $id
-     * @return void
-     */
-    public function serviceRemove(string $id): void
-    {
-        Debugbar::increaseServiceData($id, 'remove');
-    }
-
-    /**
-     * @param string $id
-     * @param mixed $service
-     * @return void
-     */
-    public function serviceSet(string $id, mixed $service): void
-    {
-        Debugbar::increaseServiceData($id, 'set');
     }
 
 }
