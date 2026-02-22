@@ -20,10 +20,11 @@ class ServiceCollector extends DataCollector implements Renderable
 
                 $result[$id] = [
                     'namespace' => is_object($instance) ? get_class($instance) : gettype($instance),
-                    'get' => Debugbar::$serviceData[$id]['get']-1,
-                    'set' => Debugbar::$serviceData[$id]['set'],
-                    'remove' => Debugbar::$serviceData[$id]['remove'],
-                    'has' => Debugbar::$serviceData[$id]['has']
+                    'get' => Kernel::$serviceContainer->getStats()[$id]['get']-1,
+                    'set' => Kernel::$serviceContainer->getStats()[$id]['set'],
+                    'remove' => Kernel::$serviceContainer->getStats()[$id]['remove'],
+                    'has' => Kernel::$serviceContainer->getStats()[$id]['has'],
+                    'set_alias' => Kernel::$serviceContainer->getStats()[$id]['setAlias'],
                 ];
             } catch (\Throwable $e) {
                 $result[$id] = [
@@ -40,7 +41,8 @@ class ServiceCollector extends DataCollector implements Renderable
                 'get' => 'Get count',
                 'set' => 'Set count',
                 'has' => 'Has count',
-                'remove' => 'Remove count'
+                'remove' => 'Remove count',
+                'set_alias' => 'Set alias count'
             ]
         ];
     }
