@@ -15,6 +15,7 @@ use NimblePHP\Framework\Config;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Interfaces\ModelInterface;
 use NimblePHP\Framework\Interfaces\ORMModelInterface;
+use NimblePHP\Framework\Kernel;
 use NimblePHP\Framework\Middleware\Interfaces\ControllerMiddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\ExceptionMiddlewareInterface;
 use NimblePHP\Framework\Middleware\Interfaces\LogMiddlewareInterface;
@@ -37,7 +38,7 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     public function afterBootstrap(): void
     {
-        if (!$_ENV['DEBUG']) {
+        if (!Config::get('DEBUG', false)) {
             return;
         }
 
@@ -51,8 +52,12 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     private function chromeDebug(): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         try {
-            if ($_ENV['DEBUG'] && (new Request())->getUri() === '/.well-known/appspecific/com.chrome.devtools.json') {
+            if (Kernel::$serviceContainer->get('kernel.request')->getUri() === '/.well-known/appspecific/com.chrome.devtools.json') {
                 $response = new Response();
                 $response->setJsonContent([
                     'workspace' => [
@@ -73,6 +78,10 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     private function initDebugbar(): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         try {
             (new Debugbar())->init();
 
@@ -155,6 +164,10 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     public function afterviewRender(array $data, string $viewName, string $filePath): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         $realpath = realpath($filePath);
         /** @var TemplateCollector $templates */
         $templates = Debugbar::$debugBar['templates'];
@@ -191,11 +204,19 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     public function afterLog(array &$logContent): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         Debugbar::addMessage('Log: ' . $logContent['message'], 'log', $logContent);
     }
 
     public function afterConstructModel(ModelInterface $model): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         Debugbar::increaseModelData($model::class);
     }
 
@@ -221,6 +242,10 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     public function exceptionHook(\Throwable $exception): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         Debugbar::addException($exception);
     }
 
@@ -230,6 +255,10 @@ class DebugbarMiddleware implements ControllerMiddlewareInterface, ViewMddleware
      */
     public function afterConstructORMModel(ORMModelInterface $model): void
     {
+        if (!Config::get('DEBUG', false)) {
+            return;
+        }
+
         Debugbar::increaseModelData($model::class);
     }
 
