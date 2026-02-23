@@ -14,6 +14,7 @@ use NimblePHP\Debugbar\Collectors\ConfigCollector;
 use NimblePHP\Debugbar\Collectors\PDOCollector;
 use NimblePHP\Debugbar\Collectors\PhpConfigCollector;
 use NimblePHP\Debugbar\Collectors\RouteCollector;
+use NimblePHP\Framework\Config;
 use NimblePHP\Framework\Exception\NimbleException;
 use NimblePHP\Framework\Kernel;
 use NimblePHP\Framework\Request;
@@ -133,7 +134,7 @@ class Debugbar
                         break;
                 }
 
-                $filePath = Kernel::$projectPath . $_ENV['DEBUGBAR_FIXED_URI'] . $uri;
+                $filePath = Kernel::$projectPath . Config::get('DEBUGBAR_FIXED_URI', '') . $uri;
 
                 if (file_exists($filePath)) {
                     $response->setContent(file_get_contents($filePath));
