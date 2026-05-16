@@ -2,8 +2,7 @@
 
 namespace NimblePHP\Debugbar;
 
-use NimblePHP\Debugbar\Middleware\DebugbarMiddleware;
-use NimblePHP\Framework\Kernel;
+use NimblePHP\Debugbar\Event\DebugbarEventListener;
 use NimblePHP\Framework\Module\Interfaces\ModuleInterface;
 
 class Module implements ModuleInterface
@@ -16,7 +15,7 @@ class Module implements ModuleInterface
 
     public function register(): void
     {
-        Kernel::$middlewareManager->add(new DebugbarMiddleware(), -100000);
+        DebugbarEventListener::register();
     }
 
 }
