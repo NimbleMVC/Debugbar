@@ -76,7 +76,7 @@ class EventCollector extends DataCollector implements Renderable
     {
         return [
             "Events" => [
-                "icon" => "cogs",
+                "icon" => "tasks",
                 "widget" => "PhpDebugBar.Widgets.TableVariableListWidget",
                 "map" => "events",
                 "default" => "{}"
