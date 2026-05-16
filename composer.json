@@ -16,8 +16,8 @@
   ],
   "require": {
     "php": ">=8.2",
-    "nimblephp/framework": ">=0.4.2",
-    "php-debugbar/php-debugbar": "v3.4.0",
+    "nimblephp/framework": ">=0.4.10",
+    "php-debugbar/php-debugbar": "v3.7.6",
     "krzysztofzylka/generator": "^1.0"
   }
 }

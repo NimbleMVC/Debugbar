@@ -5,13 +5,42 @@ namespace NimblePHP\Debugbar\Collectors;
 use DebugBar\DataCollector\DataCollector;
 use DebugBar\DataCollector\Renderable;
 use NimblePHP\Framework\Kernel;
-use NimblePHP\Framework\Middleware\MiddlewareManager;
 
 class MiddlewareCollector extends DataCollector implements Renderable
 {
+    public static function getMiddlewares(): array
+    {
+        if (!isset(Kernel::$middlewareManager)) {
+            return [];
+        }
+
+        $middlewares = Kernel::$middlewareManager->getList();
+        $result = [];
+
+        foreach ($middlewares as $middleware) {
+            if (!is_array($middleware)) {
+                continue;
+            }
+
+            $namespace = (string)($middleware['namespace'] ?? '');
+
+            if ($namespace === '') {
+                continue;
+            }
+
+            if (!class_exists($namespace) && !interface_exists($namespace) && !trait_exists($namespace)) {
+                continue;
+            }
+
+            $result[] = $middleware;
+        }
+
+        return $result;
+    }
+
     public function collect(): array
     {
-        $middlewares = Kernel::$middlewareManager->getList();
+        $middlewares = self::getMiddlewares();
         $result = [];
 
         foreach ($middlewares as $middleware) {
