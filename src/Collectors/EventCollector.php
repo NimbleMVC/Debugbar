@@ -28,31 +28,25 @@ class EventCollector extends DataCollector implements Renderable
 
         $result = [];
 
-        foreach ($listeners as $eventName => $eventListeners) {
-            if (!is_string($eventName) || !is_array($eventListeners)) {
+        foreach ($listeners as $index => $listenerData) {
+            if (!is_array($listenerData) || !isset($listenerData['event'])) {
                 continue;
             }
 
-            foreach ($eventListeners as $index => $listenerData) {
-                $priority = '';
-                $listener = $listenerData;
+            $eventName = is_string($listenerData['event']) ? $listenerData['event'] : '';
 
-                if (is_array($listenerData)) {
-                    if (isset($listenerData['listener'])) {
-                        $listener = $listenerData['listener'];
-                        $priority = isset($listenerData['priority']) ? (string)$listenerData['priority'] : '';
-                    } elseif (count($listenerData) === 2 && is_int(array_key_first($listenerData))) {
-                        $listener = $listenerData[1];
-                        $priority = isset($listenerData[0]) && is_int($listenerData[0]) ? (string)$listenerData[0] : '';
-                    }
-                }
-
-                $result[$eventName . '#' . ((int)$index + 1)] = [
-                    'event' => $eventName,
-                    'listener' => self::normalizeListener($listener),
-                    'priority' => $priority,
-                ];
+            if ($eventName === '') {
+                continue;
             }
+
+            $listener = $listenerData['listener'] ?? null;
+            $priority = isset($listenerData['priority']) ? (string)$listenerData['priority'] : '';
+
+            $result[$eventName . '#' . ((int)$index + 1)] = [
+                'event' => $eventName,
+                'listener' => self::normalizeListener($listener),
+                'priority' => $priority,
+            ];
         }
 
         return $result;
